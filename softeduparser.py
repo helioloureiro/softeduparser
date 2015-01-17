@@ -25,6 +25,13 @@ def getdata(url):
     web = urllib.urlopen(url)
     return web.read()
 
+def geturl(text):
+    try:
+        url = text.a.get("href")
+    except AttributeError:
+        url = None
+    return url
+
 def parsedata(html):
     """
     Read html page and gather only wanted information.
@@ -49,13 +56,20 @@ def parsedata(html):
         nivel_ensino_EM = info[4].string
         nivel_ensino_ES = info[5].string
         nome_programa = info[6]
+        nome_programa_text = nome_programa.getText()
+        nome_programa_url = geturl(nome_programa)
         down_win = info[7]
+        down_win_url = geturl(down_win)
         down_lnx = info[8]
+        down_lnx_url = geturl(down_lnx)
         down_mac = info[9]
+        down_mac_url = geturl(down_mac)
         down_src = info[10]
+        down_src_url = geturl(down_src)
         licenca = info[11].string
         idioma = info[12].string
         wikipedia = info[13]
+        wikipedia_url = geturl(wikipedia)
         # skipping first line (summaries)
         if (area_conhecimento == "Total"):
             continue
@@ -79,9 +93,27 @@ def parsedata(html):
             #idioma, \
             #wikipedia
         print ''
+        MYDATA[nome_programa_text] = {}
+        MYDATA[nome_programa_text]['url'] = nome_programa_url
+        MYDATA[nome_programa_text]['nivel_ensino'] = {}
+        MYDATA[nome_programa_text]['nivel_ensino']['EI'] = nivel_ensino_EI
+        MYDATA[nome_programa_text]['nivel_ensino']['AIEF'] = nivel_ensino_AIEF
+        MYDATA[nome_programa_text]['nivel_ensino']['AFEF'] = nivel_ensino_AFEF
+        MYDATA[nome_programa_text]['nivel_ensino']['EM'] = nivel_ensino_EM
+        MYDATA[nome_programa_text]['nivel_ensino']['ES'] = nivel_ensino_ES
+        MYDATA[nome_programa_text]['download'] = {}
+        MYDATA[nome_programa_text]['download']['windows'] = down_win_url
+        MYDATA[nome_programa_text]['download']['linux'] = down_lnx_url
+        MYDATA[nome_programa_text]['download']['mac'] = down_mac_url
+        MYDATA[nome_programa_text]['download']['source'] = down_src_url
+        MYDATA[nome_programa_text]['idioma'] = idioma
+        MYDATA[nome_programa_text]['licenca'] = licenca
+        MYDATA[nome_programa_text]['wikipedia'] = wikipedia_url
+    return MYDATA
 
 def generateoutput(msg):
-    None
+    return msg
+
 def usage():
     print "Use: %s <url>" % sys.argv[0]
     sys.exit(1)
