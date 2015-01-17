@@ -73,26 +73,6 @@ def parsedata(html):
         # skipping first line (summaries)
         if (area_conhecimento == "Total"):
             continue
-        #print area_conhecimento,
-            #nivel_ensino_EI, \
-            #nivel_ensino_AIEF, \
-            #nivel_ensino_AFEF, \
-            #nivel_ensino_EM, \
-            #nivel_ensino_ES, \
-        #print nome_programa,
-        print nome_programa.getText(),
-        try:
-            print nome_programa.a.get("href"),
-        except AttributeError:
-            print "FAILED:", nome_programa.a,
-            #down_win, \
-        #print down_lnx,
-            #down_mac, \
-            #down_src, \
-            #licenca, \
-            #idioma, \
-            #wikipedia
-        print ''
         MYDATA[nome_programa_text] = {}
         MYDATA[nome_programa_text]['url'] = nome_programa_url
         MYDATA[nome_programa_text]['nivel_ensino'] = {}
@@ -109,6 +89,7 @@ def parsedata(html):
         MYDATA[nome_programa_text]['idioma'] = idioma
         MYDATA[nome_programa_text]['licenca'] = licenca
         MYDATA[nome_programa_text]['wikipedia'] = wikipedia_url
+        break
     return MYDATA
 
 def generateoutput(msg):
