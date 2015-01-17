@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # THE BEERWARE LICENSE (Revision 42):
-#  Helio Loureiro wrote these scripts. As long as you retain this notice you
+#  Helio Loureiro wrote this. As long as you retain this notice you
 #  can do whatever you want with this stuff. If we meet some day, and you think
 #  this stuff is worth it, you can buy me a beer in return.
 #
@@ -59,20 +59,26 @@ def parsedata(html):
         # skipping first line (summaries)
         if (area_conhecimento == "Total"):
             continue
-        print area_conhecimento, \
-            nivel_ensino_EI, \
-            nivel_ensino_AIEF, \
-            nivel_ensino_AFEF, \
-            nivel_ensino_EM, \
-            nivel_ensino_ES, \
-            nome_programa, \
-            down_win, \
-            down_lnx, \
-            down_mac, \
-            down_src, \
-            licenca, \
-            idioma, \
-            wikipedia
+        #print area_conhecimento,
+            #nivel_ensino_EI, \
+            #nivel_ensino_AIEF, \
+            #nivel_ensino_AFEF, \
+            #nivel_ensino_EM, \
+            #nivel_ensino_ES, \
+        #print nome_programa,
+        print nome_programa.getText(),
+        try:
+            print nome_programa.a.get("href"),
+        except AttributeError:
+            print "FAILED:", nome_programa.a,
+            #down_win, \
+        #print down_lnx,
+            #down_mac, \
+            #down_src, \
+            #licenca, \
+            #idioma, \
+            #wikipedia
+        print ''
 
 def generateoutput(msg):
     None
