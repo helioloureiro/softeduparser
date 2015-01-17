@@ -17,6 +17,7 @@ Simple site parser to create mediawiki alike output.
 from BeautifulSoup import BeautifulSoup
 import urllib
 import sys
+import json
 
 def getdata(url):
     """
@@ -89,11 +90,11 @@ def parsedata(html):
         MYDATA[nome_programa_text]['idioma'] = idioma
         MYDATA[nome_programa_text]['licenca'] = licenca
         MYDATA[nome_programa_text]['wikipedia'] = wikipedia_url
-        break
     return MYDATA
 
 def generateoutput(msg):
-    return msg
+    j = json.dumps(msg, indent=4)
+    return j
 
 def usage():
     print "Use: %s <url>" % sys.argv[0]
@@ -105,6 +106,6 @@ if __name__ == '__main__':
     except:
         usage()
     html = getdata(URL)
-    json = parsedata(html)
-    output = generateoutput(json)
+    j = parsedata(html)
+    output = generateoutput(j)
     print output
