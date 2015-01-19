@@ -20,6 +20,10 @@ import sys
 import json
 import re
 
+# patch to avoid UTF-8 errors - why coding isn't working?
+reload(sys)
+sys.setdefaultencoding("UTF-8")
+
 def getdata(url):
     """
     Connect into required url and retrieve data.
