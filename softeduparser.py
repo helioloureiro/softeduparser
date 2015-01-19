@@ -98,26 +98,6 @@ def parsedata(html):
         MYDATA[nome_programa_text]['wikipedia']['tipo'] = wikipedia
         MYDATA[nome_programa_text]['wikipedia']['url'] = wikipedia_url
 
-        # fixing license here...
-        license_url = MYDATA[nome_programa_text]['licenca']['url']
-        """
-        #print "Licenca:", license_url
-        if not license_url:
-            MYDATA[nome_programa_text]['licenca']['tipo'] = \
-                'N/A (Domínio público)'
-        elif (re.search("Gnu", license_url)):
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'GNU GPL'
-        elif (re.search("Apache", license_url)):
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'Apache 2.0'
-        elif (re.search("art%C3%ADstica", license_url)):
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'Licença Artística'
-        elif (re.search("MIT", license_url)):
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'MIT/X11'
-        elif (re.search("BSD", license_url)):
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'Estilo BSD'
-        else:
-            MYDATA[nome_programa_text]['licenca']['tipo'] = 'Arrumar'
-        """
     return MYDATA
 
 def generateoutput(msg):
@@ -127,35 +107,22 @@ def generateoutput(msg):
     table = json.loads(json_formated)
     """
     Current format:
-<tr style="background: rgb(196, 202, 172) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
-<td>Biologia - Genética
-</td>
-<td data-sort-value="1">Não
-</td>
-<td data-sort-value="1">Não
-</td>
-<td data-sort-value="1">Não
-</td>
-<td data-sort-value="1">Não
-</td>
-<td>Sim
-</td>
-<td><a rel="nofollow" class="external text" href="http://genocad.org">GenoCAD</a>
-</td>
-<td data-sort-value="Sim"><a rel="nofollow" class="external text" href="http://sourceforge.net/projects/genocad/files">Windows</a>
-</td>
-<td data-sort-value="Sim"><a rel="nofollow" class="external text" href="http://sourceforge.net/projects/genocad/files">GNU/Linux</a>
-</td>
-<td data-sort-value="Sim"><a rel="nofollow" class="external text" href="http://sourceforge.net/projects/genocad/files">Mac</a>
-</td>
-<td data-sort-value="http&#58;//sourceforge.net/projects/genocad/files"><a rel="nofollow" class="external text" href="http://sourceforge.net/projects/genocad/files">Fonte</a>
-</td>
-<td><a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Apache_License">Apache 2.0</a>
-</td>
-<td data-sort-value="en">en
-</td>
-<td data-sort-value="en"><a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/GenoCAD">EN</a>
-</td></tr>
+|- style="background: rgb(195, 210, 207) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"
+|Alfabetização
+|Sim
+|Sim
+|data-sort-value="1"|Não
+|data-sort-value="1"|Não
+|data-sort-value="1"|Não
+|[http://jiletters.sourceforge.net/ JIlettres]
+|data-sort-value="Sim"|[http://sourceforge.net/projects/jiletters/files/ Windows]
+|data-sort-value="Sim"|[http://sourceforge.net/projects/jiletters/files/ GNU/Linux]
+|data-sort-value="Sim"|[http://sourceforge.net/projects/jiletters/files/ Mac]
+|data-sort-value="http://sourceforge.net/projects/jiletters/files/"|[http://sourceforge.net/projects/jiletters/files/ Fonte]
+|[https://pt.wikipedia.org/wiki/Gnu_gpl GNU GPL]
+|data-sort-value="en"|en
+|data-sort-value="1"|Não
+
     """
     # retrieved using:
     # grep '<tr' tabela_2015.htm  | sort -u | sed "s/.*\(rgb(.*)\).*/\1/"
@@ -183,7 +150,27 @@ rgb(252, 205, 236)"""
         "-moz-background-clip: -moz-initial; " + \
         "-moz-background-origin: -moz-initial; " + \
         "-moz-background-inline-policy: -moz-initial;"
-    output = ""
+    output = """
+{| id="tab" class="wikitable sortable" style="text-align:center; align=center; width: 100%;"
+|- class="cabecalho"
+! rowspan="2" | Área do conhecimento
+! class="sorter-false" colspan="5" | Nível de Ensino
+! rowspan="2" | Nome do programa e página oficial
+! class="filter-false" rowspan="2" width="64" | Baixar versão Windows
+! class="filter-false" rowspan="2" width="64" | Baixar versão GNU/Linux
+! class="filter-false" rowspan="2" width="64" | Baixar versão Mac
+! class="filter-false" rowspan="2" width="64" | Baixar código fonte
+! class="filter-select" rowspan="2" width="88" | Licença
+! class="filter-select" rowspan="2" width="64" | Idioma
+! class="filter-false"  rowspan="2" | Wikip.
+|- class="cabecalho"
+! class="filter-false" | EI
+! class="filter-false" | AIEF
+! class="filter-false" | AFEF
+! class="filter-false" | EM
+! class="filter-false" | ES
+
+"""
     current_color = -1
     last_area_conhecimento = None
     for app_name in table:
@@ -215,10 +202,11 @@ rgb(252, 205, 236)"""
             # just checking for no bugs
             if ((len(colors) - 1) > current_color):
                 current_color = 0
+
         # now build html line
-        output += "<tr style=\"background: %s %s\">" % \
+        output += "|- style=\"background: %s %s\"\n" % \
             (colors[current_color], tr_opts)
-        output += "<td>%s</td>" % area_conhecimento
+        output += "|%s\n" % area_conhecimento
         for v in [
             nivel_ensino_EI,
             nivel_ensino_AIEF,
@@ -226,38 +214,25 @@ rgb(252, 205, 236)"""
             nivel_ensino_EM,
             nivel_ensino_ES,
             ]:
-            if (v == "Sim") or (v == "sim"):
-                output += "<td data-sort-value=\"1\">%s</td>" % v
+            if (v == u"Sim") or (v == u"sim"):
+                output += "|%s\n" % v
             else:
-                output += "<td>%s</td>" % v
-        output += "<td><a rel=\"nofollow\" class=\"external text\" " + \
-            "href=\"%s\">%s</a></td>" % (app_url, app_name)
-        output += "<td data-sort-value=\"Sim\"><a rel=\"nofollow\" " + \
-            "class=\"external text\" " + \
-            "href=\"%s\">Windows</a></td>" % down_win_url
-        output += "<td data-sort-value=\"Sim\"><a rel=\"nofollow\" " + \
-            "class=\"external text\" " + \
-            "href=\"%s\">GNU/Linux</a></td>" % down_lnx_url
-        output += "<td data-sort-value=\"Sim\"><a rel=\"nofollow\" " + \
-            "class=\"external text\" " + \
-            "href=\"%s\">Mac</a></td>" % down_mac_url
-        output += "<td data-sort-value=\"%s\">" % \
-            re.sub(":", "&#58;", down_src_url)
-        output += "<a rel=\"nofollow\" class=\"external text\" " + \
-            "href=\"%s\">Fonte</a></td>" % down_src_url
-        output += "<td><a rel=\"nofollow\" class=\"external text\" " + \
-            "href=\"%s\">%s</a></td>" % (licenca_url, licenca)
-        output += "<td data-sort-value=\"%s\">%s</td>" % \
-            (idioma, idioma)
-        # to be fixed...
-        output += "<td data-sort-value=\"%s\">" % wikipedia + \
-            "<a rel=\"nofollow\" class=\"external text\" " + \
-            "href=\"%s\">%s</a></td>" % (wikipedia_url, wikipedia)
+                output += "|data-sort-value=\"1\"|%s\n" % v
+        output += "|[%s %s]\n" % (app_url, app_name)
+        # It needs to be fixed for data-sort-value
+        output += "|data-sort-value=\"Sim\"|[%s Windows]\n" % down_win_url
+        output += "|data-sort-value=\"Sim\"|[%s GNU/Linux]\n" % down_lnx_url
+        output += "|data-sort-value=\"Sim\"|[%s Mac]\n" % down_mac_url
+        output += "|data-sort-value=\"%s\"|[%s Fonte]\n" % \
+            (down_src_url, down_src_url)
+        output += "|[%s %s]\n" % (licenca_url, licenca)
+        output += "|data-sort-value=\"%s\"|%s" % (idioma, idioma)
+        output += "data-sort-value=\"%s\"|[%s %s]\n" % \
+            (wikipedia, wikipedia_url, wikipedia)
 
         #print app_name
-        output += "</tr>\n"
-    html = BeautifulSoup(output)
-    return html.prettify()
+        output += "\n"
+    return output
 
 def usage():
     print "Use: %s <url>" % sys.argv[0]
