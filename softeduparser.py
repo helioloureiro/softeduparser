@@ -231,7 +231,7 @@ rgb(252, 205, 236)"""
             (down_src_url, down_src_url)
         output += "|[%s %s]\n" % (licenca_url, licenca)
         output += "|data-sort-value=\"%s\"|%s\n" % (idioma, idioma)
-        output += "data-sort-value=\"%s\"|[%s %s]\n" % \
+        output += "|data-sort-value=\"%s\"|[%s %s]\n" % \
             (wikipedia, wikipedia_url, wikipedia)
 
         #print app_name
